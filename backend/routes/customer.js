@@ -6,7 +6,7 @@ router.get('/', (req, res, next) => {
 })
 
 // /customer/register => POST
-router.post('/register', customerController.createCustomer)
+router.post('/', customerController.createCustomer)
 
 // /customer/all => GET
 router.get('/all', customerController.getAllCustomer)

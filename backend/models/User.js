@@ -1,55 +1,19 @@
-const mongodb = require('mongodb')
-const getDb = require('../utils/database').GetDb
+const mongoose = require('mongoose')
 
-const ObjectId = mongodb.ObjectId
+const Schema = mongoose.Schema
 
-class User {
-  constructor(username, email, cart, id) {
-    this.name = username
-    this.email = email
-    this.password = password
-    this.phone = phoneNo
-    this.cart = cart // {items: []}
-    this._id = id ? new mongodb.ObjectId(id) : null
-  }
+const adminSchema = new Schema({
+  name: { type: String, required: true, lowercase: true, trim: true },
+  email: {
+    type: String,
+    required: true,
+    lowercase: true,
+    trim: true,
+    unique: true,
+  },
+  password: { type: String, required: true, trim: true },
+  phoneNo: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
+})
 
-  save() {
-    const db = getDb()
-    let newUser = db.collection('admin').findOne({ email: this.email })
-    if (!newUser) {
-      return db.collection('admin').insertOne(this)
-    } else {
-      throw 'Customer exist'
-    }
-  }
-
-  static findById(userId) {
-    const db = getDb()
-    return db
-      .collection('admin')
-      .findOne({ _id: new ObjectId(userId) })
-      .then((user) => {
-        console.log(user)
-        return user
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }
-
-  static deleteById(id) {
-    const db = getDb()
-    return db
-      .collection('admin')
-      .deleteOne({ _id: new mongodb.ObjectId(id) })
-      .then((result) => {
-        console.log('Deleted')
-        return result
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }
-}
-
-module.exports = User
+module.exports = mongoose.model('Admin', adminSchema)

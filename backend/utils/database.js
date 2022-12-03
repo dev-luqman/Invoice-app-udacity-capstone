@@ -1,15 +1,11 @@
-const { MongoClient, ServerApiVersion } = require('mongodb')
 const { DATABASE_URL } = require('./config')
-let _db
+
+const mongoose = require('mongoose')
+
 const mongoConnet = (callBack) => {
-  MongoClient.connect(DATABASE_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    serverApi: ServerApiVersion.v1,
-  })
+  mongoose
+    .connect(DATABASE_URL)
     .then((client) => {
-      console.log('connected')
-      _db = client.db('invoicing')
       callBack(client)
     })
     .catch((err) => {
@@ -19,12 +15,4 @@ const mongoConnet = (callBack) => {
     })
 }
 
-const GetDb = () => {
-  if (_db) {
-    return _db
-  }
-  throw 'no database found yet'
-}
-
 exports.mongoConnet = mongoConnet
-exports.GetDb = GetDb

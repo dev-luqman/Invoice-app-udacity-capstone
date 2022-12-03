@@ -13,6 +13,16 @@ const port = PORT || 4000
 
 app.use(bodyParser.urlencoded({ extended: false }))
 
+// parse application/json
+app.use(bodyParser.json())
+
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'GET,PATCH, PUT, POST, DELETE')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+  next()
+})
+
 app.get('/', (req, res) => {
   res.status(200).json({
     msg: 'Connection successfully',
@@ -21,13 +31,17 @@ app.get('/', (req, res) => {
   })
 })
 
-app.use('/auth', adminRoutes)
-app.use('/invoice', invoiceRoutes)
-app.use('/customer', customerRoutes)
+app.use('/api/auth', adminRoutes)
+app.use('/api/invoice', invoiceRoutes)
+app.use('/api/customer', customerRoutes)
 
 // Error Controller
 app.use(errorController.get404)
-
+app.use((error, req, res, next) => {
+  res
+    .status(error.httpStatusCode)
+    .json({ msg: 'error found', errorMessage: error })
+})
 mongoConnet((client) => {
   console.log('client')
   app.listen(port, () => {

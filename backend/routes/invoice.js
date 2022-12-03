@@ -3,14 +3,14 @@ const router = express.Router()
 
 const invoiceController = require('../controllers/invoiceController')
 
-// /Invoice/register => POST
-router.post('/register', invoiceController.createInvoice)
-
-// /Invoice/:id => GET
-router.get('/:id', invoiceController.getInvoice)
+// /api/Invoice/ => POST
+router.post('/', invoiceController.createInvoice)
 
 // /Invoice/all => GET
 router.get('/all', invoiceController.getAllInvoices)
+
+// /Invoice/:id => GET
+router.get('/:id', invoiceController.getInvoice)
 
 // /Invoice/login => DELETE
 router.delete('/:id', invoiceController.deleteInvoice)

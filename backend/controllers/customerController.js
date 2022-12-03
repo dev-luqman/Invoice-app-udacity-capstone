@@ -1,54 +1,82 @@
 const Customer = require('../models/Customer')
-
-exports.getCustomer = (req, res, next) => {
-  res.send('Hello get customer')
-}
+const Invoice = require('../models/Invoice')
 
 exports.createCustomer = (req, res, next) => {
   const name = req.body.name
   const email = req.body.email
   const phoneNo = req.body.phoneNo
-  const customer = new Customer(name, email, phoneNo)
+  const customer = new Customer({ name, email, phoneNo })
+  console.log(customer)
   customer
     .save()
     .then((result) => {
-      console.log(result)
-      console.log('Created Custommer')
-      res.json({ msg: 'Customer created successfully' })
+      res.json({
+        msg: `Customer:${name} created successfully`,
+        customer: result,
+      })
     })
     .catch((err) => {
       console.log(err)
+      res.status(400).json({
+        msg: `Customer with email:${email} - found`,
+      })
     })
 }
 
-exports.deleteById = (req, res, next) => {
+exports.deleteCustomer = (req, res, next) => {
   const ID = req.params.id
-  Customer.deleteById(ID)
-    .then((res) => {
+  Invoice.deleteMany({ userId: ID })
+    .then((response) => {
+      console.log(response)
+      return Customer.findByIdAndRemove(ID)
+    })
+    .then((response) => {
+      console.log(response)
       res.status(200).json({
-        user: res,
+        customer: response,
         msg: 'Customer deleted successfully',
       })
     })
-    .catch((err) => {})
-  res.json({ msg: 'deleteAdmin' })
+    .catch((err) => {
+      console.log(err)
+      res.status(400).json({ msg: 'error found', error: err })
+    })
+}
+
+exports.getCustomer = (req, res, next) => {
+  console.log('get custommer')
+  const ID = req.params.id
+  Customer.findById(ID)
+    .then((response) => {
+      console.log(response)
+      if (!response) {
+        throw 'user not found'
+      } else {
+        res.json({
+          customer: response,
+          msg: 'customer successfully',
+        })
+      }
+    })
+    .catch((err) => {
+      res.status(400).json({
+        msg: 'Customer not found',
+        error: err,
+      })
+    })
 }
 
 exports.getAllCustomer = (req, res, next) => {
-  console.log('hello')
-  Customer.getAllCustomer()
+  Customer.find()
     .then((response) => {
-      console.log(response)
-      res.json({
+      console.log('jnskd')
+      return res.json({
         customer: response,
         msg: 'customer call successfully',
       })
     })
-    .catch((err) => {})
-}
-
-exports.deleteCustomer = (req, res, next) => {
-  const customer = new Customer(req.body.title)
-  customer.save()
-  res.json({ msg: 'deleteCustomer' })
+    .catch((err) => {
+      console.log(error)
+      res.status(400).json({ msg: 'error found', error: err })
+    })
 }
