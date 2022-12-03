@@ -1,0 +1,18 @@
+{
+  "name": "invoive-app",
+  "version": "1.0.0",
+  "description": "udacity/capstone api application for creating invoice for user ",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Balogun Lukman O.",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongodb": "^4.12.1",
+    "mongoose": "^6.7.5"
+  }
+}
