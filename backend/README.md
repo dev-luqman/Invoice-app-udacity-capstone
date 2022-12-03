@@ -8,6 +8,7 @@ This is simple node.js application used to create invoice for customers  for the
 3. Create and update your env file with parameter in the sample.env file
 4. Email SetUp : SendGrid ` in-progree `
 5. Install packages and start application with the commands below
+
 ```
 npm i
 npm start
