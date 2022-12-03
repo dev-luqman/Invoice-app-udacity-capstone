@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 
 const mongoConnet = require('./utils/database').mongoConnet
 const { PORT } = require('./utils/config')
+
 const errorController = require('./controllers/errorController')
 const adminRoutes = require('./routes/auth')
 const invoiceRoutes = require('./routes/invoice')
@@ -19,7 +20,10 @@ app.use(bodyParser.json())
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET,PATCH, PUT, POST, DELETE')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Authorization, Content-Type, On-behalf-of, x-sg-elas-acl',
+  )
   next()
 })
 

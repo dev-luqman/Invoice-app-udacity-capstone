@@ -1,6 +1,19 @@
 const Invoice = require('../models/Invoice')
 const Customer = require('../models/Customer')
 
+const { SENDGRID_API_KEY, EMAIL_FROM } = require('../utils/config')
+
+const sendgrid = require('@sendgrid/mail')
+sendgrid.setApiKey(SENDGRID_API_KEY)
+
+// Email Format
+const msg = {
+  to: 'lukheebalo@gmail.com',
+  from: EMAIL_FROM,
+  subject: 'Sending with SendGrid Is Fun',
+  text: 'A test project for sending mail',
+}
+
 let ITEM_PER_PAGE = 5
 
 exports.createInvoice = async (req, res, next) => {
@@ -9,6 +22,7 @@ exports.createInvoice = async (req, res, next) => {
   // find customer first
   Customer.findById(userId) // find if user exit first
     .then((response) => {
+      console.log(response)
       if (!response) {
         throw 'user not found'
       }
@@ -21,11 +35,20 @@ exports.createInvoice = async (req, res, next) => {
         msg: `Invoice created successfully`,
         customer: result,
       })
+
+      msg.html = `<strong> Your invoice is ready, please check ${result._id} </strong>`
+      return sendgrid
+        .send(msg)
+        .then((response) => {
+          console.log('Email sent\n', response)
+        })
+        .catch((err) => {
+          console.error(err)
+        })
     })
+
     .catch((err) => {
-      // const error = new Error(err)
-      // error.httpStatusCode = 400
-      // return next(error)
+      console.log(err)
       res.status(400).json({
         msg: `Invoice can not be created`,
         error: err,
