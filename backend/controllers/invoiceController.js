@@ -1,6 +1,8 @@
 const Invoice = require('../models/Invoice')
 const Customer = require('../models/Customer')
 
+let ITEM_PER_PAGE = 5
+
 exports.createInvoice = async (req, res, next) => {
   const userId = req.body.userId
   const items = req.body.items
@@ -53,12 +55,23 @@ exports.getInvoice = (req, res, next) => {
 }
 
 exports.getAllInvoices = (req, res, next) => {
+  let page = req.query.page || 1
+  let totalItem
+
   Invoice.find()
-    .populate('userId')
+    .count()
+    .then((total) => {
+      totalItem = total
+      return Invoice.find()
+        .skip((page - 1) * ITEM_PER_PAGE)
+        .limit(ITEM_PER_PAGE)
+        .populate('userId')
+    })
     .then((response) => {
       console.log(response)
       return res.json({
         invoice: response,
+        total: totalItem,
         msg: 'Invoice call successfully',
       })
     })

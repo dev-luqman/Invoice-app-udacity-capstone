@@ -1,6 +1,8 @@
 const Customer = require('../models/Customer')
 const Invoice = require('../models/Invoice')
 
+let ITEM_PER_PAGE = 5
+
 exports.createCustomer = (req, res, next) => {
   const name = req.body.name
   const email = req.body.email
@@ -67,11 +69,22 @@ exports.getCustomer = (req, res, next) => {
 }
 
 exports.getAllCustomer = (req, res, next) => {
+  let page = req.query.page || 1
+  let totalItem
+
   Customer.find()
+    .count()
+    .then((total) => {
+      totalItem = total
+      return Customer.find()
+        .skip((page - 1) * ITEM_PER_PAGE)
+        .limit(ITEM_PER_PAGE)
+    })
     .then((response) => {
       console.log('jnskd')
       return res.json({
         customer: response,
+        total: totalItem,
         msg: 'customer call successfully',
       })
     })
