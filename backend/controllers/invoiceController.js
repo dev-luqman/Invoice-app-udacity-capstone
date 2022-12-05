@@ -14,7 +14,7 @@ const msg = {
   text: 'A test project for sending mail',
 }
 
-let ITEM_PER_PAGE = 5
+let ITEM_PER_PAGE = 20
 
 exports.createInvoice = async (req, res, next) => {
   const userId = req.body.userId

@@ -1,7 +1,7 @@
 const Customer = require('../models/Customer')
 const Invoice = require('../models/Invoice')
 
-let ITEM_PER_PAGE = 5
+let ITEM_PER_PAGE = 20
 
 exports.createCustomer = (req, res, next) => {
   const name = req.body.name

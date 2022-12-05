@@ -9,6 +9,7 @@ const errorController = require('./controllers/errorController')
 const adminRoutes = require('./routes/auth')
 const invoiceRoutes = require('./routes/invoice')
 const customerRoutes = require('./routes/customer')
+const cors = require('cors')
 
 const port = PORT || 4000
 
@@ -17,15 +18,22 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Methods', 'GET,PATCH, PUT, POST, DELETE')
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'Authorization, Content-Type, On-behalf-of, x-sg-elas-acl',
-  )
-  next()
-})
+app.use(
+  cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
+  }),
+)
+
+// app.use((req, res, next) => {
+//   res.setHeader('Access-Control-Allow-Origin', '*')
+//   res.setHeader('Access-Control-Allow-Methods', 'GET,PATCH, PUT, POST, DELETE')
+//   res.setHeader(
+//     'Access-Control-Allow-Headers',
+//     'Authorization, Content-Type, On-behalf-of, x-sg-elas-acl',
+//   )
+//   next()
+// })
 
 app.get('/', (req, res) => {
   res.status(200).json({
