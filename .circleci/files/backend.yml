@@ -1,0 +1,47 @@
+Description: >
+  Invoice backend stack.
+
+Parameters:
+  ID:
+    Description: Unique identifier.
+    Type: String
+
+Resources:
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub Invoice-${ID}
+      GroupDescription: Allow port 22 and port 3030.
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 8080
+          ToPort: 8080
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 3030
+          ToPort: 3030
+          CidrIp: 0.0.0.0/0
+
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      SecurityGroups:
+        - Ref: InstanceSecurityGroup     
+      KeyName: apacheServer # If you use another key pair name, please put here
+      # Ubuntu 18 or higher works fine for your region
+      ImageId: ami-08c40ec9ead489470
+      Tags:
+        - Key: Name
+          Value: !Sub backend-${ID}
+
+Outputs: 
+  InstanceDNSName: 
+    Description: A reference to the created EC2 url
+    Value: !GetAtt EC2Instance.PublicIp
+    Export:
+      Name: !Sub EC2InstanceDNSName-${ID}

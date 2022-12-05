@@ -96,12 +96,58 @@ jobs:
             cd backend
             npm i
             npm run test
+
+  deploy-infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Ensure back-end infrastructure exists
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/files/backend.yml \
+              --tags project=invoice \
+              --stack-name "invoice-backend-${CIRCLE_WORKFLOW_ID:0:7}"  \
+              --parameter-overrides ID=${CIRCLE_WORKFLOW_ID:0:7} 
+      - run:
+          name: Ensure front-end infrastructure exist
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/files/frontend.yml \
+              --tags project=invoice \
+              --stack-name "invoice-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+      - run:
+          name: Add back-end ip to ansible inventory
+          command: |
+            aws cloudformation list-exports \
+             --query "Exports[?Name==\`EC2InstanceDNSName-${CIRCLE_WORKFLOW_ID:0:7}\`].Value" --no-paginate --output text >> .circleci/ansible/inventory.txt
+      - run: cat .circleci/ansible/inventory.txt
+      - run:
+          name: Install tar utility
+          command: |
+            yum install -y tar gzip
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/inventory.txt
+      - destroy-environment:
+          id: invoice-backend-${CIRCLE_WORKFLOW_ID:0:7}
+      - destroy-environment:
+          id: invoice-frontend-${CIRCLE_WORKFLOW_ID:0:7}
+
 workflows:
   default:
     jobs:
       - build-frontend
       - build-backend
-      - test-frontend:
-          requires: [build-frontend]
-      - test-backend:
-          requires: [build-backend]
+      # - test-frontend:
+      #     requires: [build-frontend]
+      # - test-backend:
+      #     requires: [build-backend]
+      - deploy-infrastructure:
+          requires: [build-frontend, build-backend]
+          # filters:
+          #   branches:
+          #     only: [master]
