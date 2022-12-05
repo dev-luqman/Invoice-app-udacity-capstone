@@ -5,7 +5,6 @@ import InvoiceContext from '../../Components/Contexts/InvoiceContext'
 
 function InvoiceTab() {
   const {
-    createInvoice,
     getInvoice,
     deleteInvoice,
     invoiceData: { loading, invoices, message },
