@@ -36,8 +36,6 @@ jobs:
       - checkout
       - restore_cache:
           keys: [frontend-build]
-      - run: cd ./frontend
-      - run: ls
       - run:
           name: Install front-end Package
           command: |
@@ -50,7 +48,28 @@ jobs:
           command: |
             cd frontend && npm run build
 
+  build-backend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [backend-build]
+      - run:
+          name: Install Back-end Package
+          command: |
+            cd backend
+            npm i
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-build
+      - run:
+          name: Build Back-end
+          command: |
+            cd backend
+            npm run build
 workflows:
   default:
     jobs:
       - build-frontend
+      - build-backend
