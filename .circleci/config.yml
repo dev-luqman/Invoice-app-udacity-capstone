@@ -66,8 +66,8 @@ jobs:
       - run:
           name: Build Back-end
           command: |
-            cd backend
-            npm run build
+            cd backend && 
+            npm run lint
 
   test-frontend:
     docker:
@@ -95,7 +95,7 @@ jobs:
           command: |
             cd backend
             npm i
-            npm run lint
+            npm run test
 workflows:
   default:
     jobs:
