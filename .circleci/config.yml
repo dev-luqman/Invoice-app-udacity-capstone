@@ -1,0 +1,56 @@
+version: 2.1
+orbs:
+  slack: circleci/slack@4.10.1
+commands:
+  destroy-environment:
+    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+    parameters:
+      id: 
+        type: string
+    steps:
+      - run:
+          name: Destroy environments
+          when: on_fail
+          command: |
+            # Delete Stack if error
+            aws cloudformation delete-stack --stack-name << parameters.id >>
+
+  destroy-s3-bucketfile:
+    description: Delete S3Bucket files in frontend with workflow ID.
+    parameters:
+      id: 
+        type: string
+    steps:
+      - run:
+          name: Destroy environments
+          when: on_fail
+          command: |
+            # delete file in s3 buckets if exit
+            aws s3 rm s3://udapeople-<< parameters.id >> --recursive
+
+jobs:
+  build-frontend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [frontend-build]
+      - run: cd ./frontend
+      - run: ls
+      - run:
+          name: Install front-end Package
+          command: |
+            cd frontend && npm i
+      - save_cache:
+          paths: [frontend/node_modules]
+          key: frontend-build
+      - run:
+          name: Build front-end
+          command: |
+            cd frontend && npm run build
+
+workflows:
+  default:
+    jobs:
+      - build-frontend
