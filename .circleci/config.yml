@@ -215,11 +215,6 @@ jobs:
       - run:
           name: Deploy backend
           command: |
-            ls
-            cd backend
-            npm i
-            npm run build
-            cd ..
             # Zip the directory
             tar -C backend -czvf artifact.tar.gz .
             cd .circleci/ansible
@@ -229,8 +224,6 @@ jobs:
             cat inventory
             ansible-playbook -i inventory deploy-backend.yml
       # Here's where you will add some code to rollback on failure  
-      - destroy-s3-bucketfile: 
-          id: ${CIRCLE_WORKFLOW_ID:0:7}
       - destroy-environment:
           id: invoice-backend-${CIRCLE_WORKFLOW_ID:0:7}
       - destroy-environment:
