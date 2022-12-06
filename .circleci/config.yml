@@ -226,6 +226,8 @@ jobs:
       # Here's where you will add some code to rollback on failure  
       - destroy-environment:
           id: invoice-backend-${CIRCLE_WORKFLOW_ID:0:7}
+      - destroy-s3-bucketfile: 
+          id: ${CIRCLE_WORKFLOW_ID:0:7}
       - destroy-environment:
           id: invoice-frontend-${CIRCLE_WORKFLOW_ID:0:7}
 
