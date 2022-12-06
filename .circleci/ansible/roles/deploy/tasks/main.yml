@@ -1,0 +1,54 @@
+---
+- name: "update apt packages."
+  become: yes
+  apt:
+    update_cache: yes
+
+- name: "upgrade packages"
+  become: yes
+  apt:
+    upgrade: 'yes'
+    update_cache: yes
+
+- name: "remove unused dependencies"
+  become: yes
+  apt:
+    autoremove: true
+
+- name: "install node and npm"
+  become: yes
+  apt:
+    name:
+      - nodejs
+      - npm
+    state: latest
+    update_cache: true
+
+- name: "install pm2"
+  become: yes
+  npm:
+    name: pm2
+    global: yes
+    production: yes
+    state: present
+
+- name: "create a web directory"
+  shell: mkdir $HOME/webs
+
+- name: "Copy File to our Web Dir."
+  copy:
+    src: ../../../../artifact.tar.gz
+    dest: ~/webs/
+
+- name: "Unarchive backend"
+  unarchive:
+    src: ~/webs/artifact.tar.gz
+    dest: $HOME/webs
+    remote_src: yes
+
+- name: "Run application with pm2"
+  shell: |
+      cd ~/webs
+      npm install
+      pm2 stop default 
+      pm2 start npm -- start
