@@ -242,7 +242,7 @@ workflows:
           # filters:
           #   branches:
           #     only: [master]
-      - deploy-frontend:
-          requires: [deploy-infrastructure]
-      # - deploy-backend:
+      # - deploy-frontend:
       #     requires: [deploy-infrastructure]
+      - deploy-backend:
+          requires: [deploy-infrastructure]
