@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: invoice-node-deployment
+  labels:
+    app: app-staging
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: app-staging
+  template:
+    metadata:
+      labels:
+        app: app-staging
+    spec:
+      containers:
+        - name: app-staging
+          image: lukhee/invoice-app:latest
+          ports:
+            - containerPort: 8080
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: app-staging-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: app-staging
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+
+
+
+
+
