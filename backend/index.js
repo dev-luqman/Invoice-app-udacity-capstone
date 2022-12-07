@@ -37,7 +37,7 @@ app.use(
 
 app.get('/', (req, res) => {
   res.status(200).json({
-    msg: 'Connection successfully',
+    msg: 'Updated:latest-v2 Connection successfully',
     status: 'ok',
     statusCode: 200,
   })

@@ -4,7 +4,8 @@
   "description": "udacity/capstone api application for creating invoice for user ",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .  --ext .js",
     "lint-fix": "eslint --fix .  --ext .js"
