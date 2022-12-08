@@ -249,10 +249,10 @@ jobs:
           echo $CIRCLE_BUILD_NUM
           docker build -t invoice-app:$TAG .
 
-          docker image tag invoice-app:$TAG lukhee/invoice-app:$CIRCLE_BUILD_NUM
+          docker image tag invoice-app:$TAG lukhee/invoice-app:circleci.$CIRCLE_BUILD_NUM
           docker image tag invoice-app:$TAG lukhee/invoice-app:latest
 
-          echo $DOCKERHUB_USERNAME | echo $DOCKERHUB_PASSWORD
+          echo $DOCKERHUB_USERNAME | echo $DOCKERHUB_PASSWORD  --password-stdin
 
           docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
           docker push lukhee/invoice-app:circleci.$CIRCLE_BUILD_NUM
