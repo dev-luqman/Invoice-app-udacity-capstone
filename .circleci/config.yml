@@ -327,7 +327,7 @@ jobs:
       - run: kubectl describe pod
       - run: kubectl get pod
       - run: kubectl get nodes
-      - run: kubectl describe nodes
+      - run: kubectl describe deployment
 
 workflows:
   default:
