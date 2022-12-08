@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
         - name: app-staging
-          # image: lukhee/invoice-app:circleci.${CIRCLE_BUILD_NUM}
-          image: lukhee/invoice-app:latest
+          image: lukhee/invoice-app:circleci.${CIRCLE_BUILD_NUM}
+          # image: lukhee/invoice-app:latest
           ports:
             - containerPort: 8080
 

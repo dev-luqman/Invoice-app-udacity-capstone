@@ -310,9 +310,8 @@ jobs:
           command: |
             cd .circleci/files/production_deployment
             ls
-            # envsubst < invoice_deployment.yml
-            # kubectl rollout -h
-            cat invoice_deployment.yml
+            envsubst < invoice_deployment.yml
+            # cat invoice_deployment.yml
             sudo cat invoice_deployment.yml
             # kubectl apply -f invoice_deployment.yml
             # kubectl get pod
