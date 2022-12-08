@@ -297,8 +297,8 @@ jobs:
           command: |
             cd .circleci/files/production_deployment
             ls
-
-            kubectl apply -f invoice_deployment.yml --validate=true
+            envsubst < invoice_deployment.yml
+            kubectl apply -f invoice_deployment.yml
             kubectl get pod
 
 workflows:
