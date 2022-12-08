@@ -1,18 +1,18 @@
 const Invoice = require('../models/Invoice')
 const Customer = require('../models/Customer')
 
-const { SENDGRID_API_KEY, EMAIL_FROM } = require('../utils/config')
+// const { SENDGRID_API_KEY, EMAIL_FROM } = require('../utils/config')
 
-const sendgrid = require('@sendgrid/mail')
-sendgrid.setApiKey(SENDGRID_API_KEY)
+// const sendgrid = require('@sendgrid/mail')
+// sendgrid.setApiKey(SENDGRID_API_KEY)
 
-// Email Format
-const msg = {
-  to: 'lukheebalo@gmail.com',
-  from: EMAIL_FROM,
-  subject: 'Sending with SendGrid Is Fun',
-  text: 'A test project for sending mail',
-}
+// // Email Format
+// const msg = {
+//   to: 'lukheebalo@gmail.com',
+//   from: EMAIL_FROM,
+//   subject: 'Sending with SendGrid Is Fun',
+//   text: 'A test project for sending mail',
+// }
 
 let ITEM_PER_PAGE = 20
 
@@ -36,15 +36,15 @@ exports.createInvoice = async (req, res, next) => {
         customer: result,
       })
 
-      msg.html = `<strong> Your invoice is ready, please check ${result._id} </strong>`
-      return sendgrid
-        .send(msg)
-        .then((response) => {
-          console.log('Email sent\n', response)
-        })
-        .catch((err) => {
-          console.error(err)
-        })
+      // msg.html = `<strong> Your invoice is ready, please check ${result._id} </strong>`
+      // return sendgrid
+      //   .send(msg)
+      //   .then((response) => {
+      //     console.log('Email sent\n', response)
+      //   })
+      //   .catch((err) => {
+      //     console.error(err)
+      //   })
     })
 
     .catch((err) => {
