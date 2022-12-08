@@ -283,13 +283,12 @@ jobs:
       - run:
           name: Install kubectl
           command: |
+            curl -o kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.13.7/2019-06-11/bin/linux/amd64/kubectl
             # curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.22.15/2022-10-31/bin/linux/amd64/kubectl
 
-            curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.13/2022-10-31/bin/linux/arm64/kubectl
 
             chmod +x ./kubectl
             sudo mv ./kubectl /usr/local/bin/kubectl
-            kubectl version
       - run:
           name: Install awscli and gettext-base
           command: |
