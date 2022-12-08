@@ -311,7 +311,9 @@ jobs:
               echo "Cluster already created"
               else
               echo "Cluster not found - Please create"
-              eksctl create cluster --name $CLUSTER_NAME --version 1.23 --region $AWS_DEFAULT_REGION --zones us-east-1a,us-east-1b --nodegroup-name $CLUSTER_NAME-nodegroup --node-type t2.small --nodes-min 2 --nodes-max 4 --managed
+              eksctl create cluster --name $CLUSTER_NAME
+              
+              # eksctl create cluster --name $CLUSTER_NAME --version 1.23 --region $AWS_DEFAULT_REGION --zones us-east-1a,us-east-1b --nodegroup-name $CLUSTER_NAME-nodegroup --node-type t2.small --nodes-min 2 --nodes-max 4 --managed
             fi
 
       # SLack Notification if error
@@ -321,18 +323,28 @@ jobs:
       - image: circleci/python:3.7
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 20.10.14
-          docker_layer_caching: true
       - run:
-          name: Install kubectl
+          name: IAM Authenticator
+          command: |
+            # curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.21.2/2021-07-05/bin/linux/amd64/aws-iam-authenticator
+
+            curl -Lo aws-iam-authenticator https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/download/v0.5.9/aws-iam-authenticator_0.5.9_linux_amd64
+
+            chmod +x ./aws-iam-authenticator
+            sudo mv ./aws-iam-authenticator /usr/local/bin/aws-iam-authenticator
+            aws-iam-authenticator help
+
+      - run:
+          name: Install packages (kubectl $ eksctl)
           command: |
             # curl -o kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.13.7/2019-06-11/bin/linux/amd64/kubectl
             curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.22.15/2022-10-31/bin/linux/amd64/kubectl
-
-
             chmod +x ./kubectl
             sudo mv ./kubectl /usr/local/bin/kubectl
+
+            curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+            sudo mv /tmp/eksctl /usr/local/bin
+
       - run:
           name: Install awscli and gettext-base
           command: |
@@ -342,20 +354,11 @@ jobs:
           name: Install envsubst
           command: |
             sudo pip3 install envsubst
-      - run:
-          name: Prepare K8S templates
-          command: |
-            echo $AWS_DEFAULT_REGION
-            aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $CLUSTER_NAME
-            # rm -rf .circleci/.generated && mkdir -p .circleci/.generated
-            # for f in .circleci/files/production_deployment/invoice_deployment.yml
-            #   do
-            #   envsubst < $f > ".circleci/files/production_deployment/$(basename $f)"
-            # done
 
       - run:
           name: Deploy
           command: |
+            aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $CLUSTER_NAME
             cd .circleci/files/production_deployment
             ls
             kubectl get pod
