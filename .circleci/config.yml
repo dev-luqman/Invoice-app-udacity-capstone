@@ -305,13 +305,13 @@ jobs:
           name: Create eks Cluster if not created
           command: |
             aws cloudformation list-exports > cluster.txt
-            cat cluster.txt
-            if [ $(grep -i "capstoneeks" cluster.txt | wc -l) -ge 1 ]
+            cat clusterFile.txt
+            if [ $(grep -i "capstone_invoice-app" clusterFile.txt | wc -l) -ge 1 ]
               then
-              echo "already EKS Cluster exists in environment"
+              echo "Cluster already created"
               else
-              echo "creating the EKS cluster"
-              # eksctl create cluster --name capstoneeks --version 1.23 --region us-east-2 --zones us-west-2a,us-west-2b --nodegroup-name capstonenodegrp --node-type t2.small --nodes-min 2 --nodes-max 4 --managed
+              echo "Cluster not found - Please create"
+              eksctl create cluster --name capstone_invoice-app --version 1.23 --region us-east-2 
             fi
 
       
