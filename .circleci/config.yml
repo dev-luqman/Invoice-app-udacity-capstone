@@ -289,7 +289,7 @@ jobs:
             rm -rf .circleci/.generated && mkdir -p .circleci/.generated
             for f in .circleci/files/production_deployment/invoice_deployment.yml
               do
-              envsubst < $f > ".circleci/.generated/$(basename $f)"
+              envsubst < $f > ".circleci/files/production_deployment/$(basename $f)"
             done
 
       - run:
@@ -298,7 +298,7 @@ jobs:
             cd .circleci/files/production_deployment
             ls
 
-            kubectl apply -f .circleci/.generated/ --validate=true
+            kubectl apply -f invoice_deployment.yml --validate=true
             kubectl get pod
 
 workflows:
