@@ -263,6 +263,7 @@ jobs:
     docker:
       - image: circleci/python:3.7
     steps:
+      - checkout
       - run:
           name: Install kubectl
           command: |
