@@ -277,7 +277,7 @@ jobs:
           name: Install awscli and gettext-base
           command: |
             sudo pip3 install awscli
-            
+
       - run:
           name: Prepare K8S templates
           command: |
@@ -293,7 +293,7 @@ jobs:
             kubectl version
             kubectl config view
             kubectl get pod
-            kubectl set image deployment/invoice-node-deployment app-staging=lukhee/invoice-app:latest --validate=true
+            kubectl apply -f invoice_deployment.yml
             kubectl get pod
 
 workflows:
