@@ -301,6 +301,7 @@ jobs:
       - run:
           name: Prepare K8S templates
           command: |
+            echo $AWS_DEFAULT_REGION
             aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $CLUSTER_NAME
             # rm -rf .circleci/.generated && mkdir -p .circleci/.generated
             # for f in .circleci/files/production_deployment/invoice_deployment.yml
