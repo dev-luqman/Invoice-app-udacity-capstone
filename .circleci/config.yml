@@ -323,7 +323,6 @@ jobs:
       - run: sleep 13
       - run: kubectl describe pod
       - run: kubectl get pod
-      - run: kubectl apply help
 
 workflows:
   default:
