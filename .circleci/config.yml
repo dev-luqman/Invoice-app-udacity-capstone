@@ -291,20 +291,17 @@ jobs:
       - run:
           name: Install packages (kubectl && eksctl)
           command: |
-            curl -o kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.13.7/2019-06-11/bin/linux/amd64/kubectl
-
-            # # curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.22.15/2022-10-31/bin/linux/amd64/kubectl
+            curl -LO https://dl.k8s.io/release/v1.25.0/bin/linux/amd64/kubectl
             
-            # chmod +x ./kubectl
-            # sudo mv ./kubectl /usr/local/bin/kubectl
+            chmod +x ./kubectl
+            sudo mv ./kubectl /usr/local/bin/kubectl
+            kubectl version --client
 
-            sudo apt-get update
-            sudo apt-get install -y kubectl
 
             curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
             sudo mv /tmp/eksctl /usr/local/bin
       - run: eksctl version
-      - run: kubectl get pods
+      # - run: kubectl get pods
             
 
 
