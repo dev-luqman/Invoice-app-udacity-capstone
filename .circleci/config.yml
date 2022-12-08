@@ -306,12 +306,12 @@ jobs:
           command: |
             aws cloudformation list-exports > saveFile.txt
             cat saveFile.txt
-            if [ $(grep -i "capstone_invoice-app" saveFile.txt | wc -l) -ge 1 ]
+            if [ $(grep -i "capstone-invoice-app" saveFile.txt | wc -l) -ge 1 ]
               then
               echo "Cluster already created"
               else
               echo "Cluster not found - Please create"
-              eksctl create cluster --name capstone_invoice-app --version 1.23 --region us-east-2 
+              eksctl create cluster --name capstone-invoice-app --version 1.23 --region us-east-2 
             fi
 
       
