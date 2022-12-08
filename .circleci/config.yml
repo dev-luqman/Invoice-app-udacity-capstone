@@ -228,8 +228,8 @@ jobs:
       - destroy-environment:
           id: invoice-frontend-${CIRCLE_WORKFLOW_ID:0:7}
   
-  build:
-    build_backed_to_dockerhub:
+  build_backed_to_dockerhub:
+    docker:
       - image: cimg/go:1.17
         auth:
           username: $DOCKERHUB_USERNAME
