@@ -258,6 +258,23 @@ jobs:
           docker push lukhee/invoice-app:circleci.$CIRCLE_BUILD_NUM
           docker push lukhee/invoice-app:latest
 
+
+  update_to_production:
+    docker:
+      - image: circleci/python:3.7
+      - run:
+          name: Install kubectl
+          command: |
+            curl -o kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.13.7/2019-06-11/bin/linux/amd64/kubectl
+            chmod +x ./kubectl
+            sudo mv ./kubectl /usr/local/bin/kubectl
+      - run:
+          name: Deploy
+          command: |
+            cd backend/.circleci/files/production_deployment
+            kubectl apply -f invoice_deployment.yml
+            kubectl get pod
+
 workflows:
   default:
     jobs:
@@ -278,3 +295,5 @@ workflows:
       #     requires: [deploy-infrastructure]
 
       - build_backed_to_dockerhub
+      - update_to_production: 
+          required: [build_backed_to_dockerhub]
