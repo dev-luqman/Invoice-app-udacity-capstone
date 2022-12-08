@@ -276,7 +276,8 @@ jobs:
       - run:
           name: Install awscli 
           command: |
-            sudo pip3 install awscli
+            # sudo pip3 install awscli
+            pip3 install awscli
       - run:
           name: IAM Authenticator
           command: |
@@ -294,18 +295,18 @@ jobs:
           command: |
             curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
             mv /tmp/eksctl /usr/local/bin
-      - run:
-          name: EKS Cluster creation 
-          command: |
-            aws cloudformation list-exports > cluster.txt
-            cat cluster.txt
-            if [ $(grep -i "capstoneeks" cluster.txt | wc -l) -ge 1 ]
-              then
-              echo "already EKS Cluster exists in environment"
-              else
-              echo "creating the EKS cluster"
-              eksctl create cluster --name capstoneeks --version 1.23 --region us-west-2 --zones us-west-2a,us-west-2b --nodegroup-name capstonenodegrp --node-type t2.small --nodes-min 2 --nodes-max 4 --managed
-            fi
+      # - run:
+      #     name: EKS Cluster creation 
+      #     command: |
+      #       aws cloudformation list-exports > cluster.txt
+      #       cat cluster.txt
+      #       if [ $(grep -i "capstoneeks" cluster.txt | wc -l) -ge 1 ]
+      #         then
+      #         echo "already EKS Cluster exists in environment"
+      #         else
+      #         echo "creating the EKS cluster"
+      #         eksctl create cluster --name capstoneeks --version 1.23 --region us-west-2 --zones us-west-2a,us-west-2b --nodegroup-name capstonenodegrp --node-type t2.small --nodes-min 2 --nodes-max 4 --managed
+      #       fi
 
       
 
