@@ -270,7 +270,7 @@ jobs:
 
   create_cluster_if_not_exit:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: circleci/python:3.7
     steps:
       - checkout
       - run:
