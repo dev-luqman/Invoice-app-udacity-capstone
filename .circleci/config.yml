@@ -279,6 +279,8 @@ jobs:
             cd .circleci/files/production_deployment
             ls
 
+            kubectl --version
+            kubectl config view
             kubectl get pod
             kubectl set image deployment/invoice-node-deployment app-staging=lukhee/invoice-app:latest --validate=true
             kubectl get pod
