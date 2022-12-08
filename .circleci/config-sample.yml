@@ -569,6 +569,88 @@ jobs:
 
 
 
+  clustercreate:
+    docker:
+      - image: python:3.7.3-stretch
+    steps:
+      - checkout
+      - run:
+          name: AWSCLI 
+          command: |
+            pip3 install awscli
+      - run:
+          name: IAM Authenticator
+          command: |
+            curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.21.2/2021-07-05/bin/linux/amd64/aws-iam-authenticator
+            chmod +x ./aws-iam-authenticator
+            mv ./aws-iam-authenticator /usr/local/bin/aws-iam-authenticator
+      - run:
+          name: Download kubectl  
+          command: |
+            curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl
+            chmod +x ./kubectl
+            mv ./kubectl /usr/local/bin/kubectl
+      - run:
+          name: Download eksctl 
+          command: |
+            curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+            mv /tmp/eksctl /usr/local/bin
+      - run:
+          name: EKS Cluster creation 
+          command: |
+            aws cloudformation list-exports > cluster.txt
+            cat cluster.txt
+            if [ $(grep -i "capstoneeks" cluster.txt | wc -l) -ge 1 ]
+              then
+              echo "already EKS Cluster exists in environment"
+              else
+              echo "creating the EKS cluster"
+              eksctl create cluster --name capstoneeks --version 1.23 --region us-west-2 --zones us-west-2a,us-west-2b --nodegroup-name capstonenodegrp --node-type t2.small --nodes-min 2 --nodes-max 4 --managed
+            fi
+
+            
+  clusterdeploy:
+    docker:
+      - image: python:3.7.3-stretch
+    steps:
+      - checkout
+      - run:
+          name: AWSCLI 
+          command: |
+            pip3 install awscli
+      - run:
+          name: IAM Authenticator
+          command: |
+            curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.21.2/2021-07-05/bin/linux/amd64/aws-iam-authenticator
+            chmod +x ./aws-iam-authenticator
+            mv ./aws-iam-authenticator /usr/local/bin/aws-iam-authenticator
+      - run:
+          name: Download kubectl  
+          command: |
+            curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl
+            chmod +x ./kubectl
+            mv ./kubectl /usr/local/bin/kubectl
+      - run:
+          name: Download eksctl 
+          command: |
+            curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+            mv /tmp/eksctl /usr/local/bin
+      - run:
+          name: eks cluster deploy
+          command: |
+            aws eks update-kubeconfig --region us-west-2 --name capstoneeks
+            kubectl apply -f deploy.yml
+            kubectl get svc
+            kubectl get nodes
+            kubectl get pods    
+            kubectl get deployment
+            kubectl get deployments -o wide
+            kubectl get pods --all-namespaces
+            kubectl get pod -o wide
+            kubectl apply -f service.yml
+            kubectl get services
+            kubectl rollout status deployment/capstone
+            kubectl describe svc capstone
 
 
 

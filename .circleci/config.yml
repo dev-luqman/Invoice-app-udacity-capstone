@@ -236,14 +236,9 @@ jobs:
           password: $DOCKERHUB_PASSWORD 
     steps:
       - checkout
-
       - setup_remote_docker:
           version: 20.10.14
           docker_layer_caching: true
-
-      # build and push Docker image
-
-
       - run: 
           name: Save all db varibles in envs file 
           command: |
@@ -254,6 +249,7 @@ jobs:
             echo PORT=$PORT >> .env
             echo VERSION=$CIRCLE_BUILD_NUM >> .env
 
+      # build and push Docker image
       - run: |
           cd backend
           ls
@@ -271,6 +267,47 @@ jobs:
           docker push lukhee/invoice-app:circleci.$CIRCLE_BUILD_NUM
           docker push lukhee/invoice-app:latest
 
+
+  create_cluster_if_not_exit:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - run:
+          name: Install awscli 
+          command: |
+            sudo pip3 install awscli
+      - run:
+          name: IAM Authenticator
+          command: |
+            curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.21.2/2021-07-05/bin/linux/amd64/aws-iam-authenticator
+            chmod +x ./aws-iam-authenticator
+            mv ./aws-iam-authenticator /usr/local/bin/aws-iam-authenticator
+      - run:
+          name: Download kubectl  
+          command: |
+            curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl
+            chmod +x ./kubectl
+            mv ./kubectl /usr/local/bin/kubectl
+      - run:
+          name: Download eksctl 
+          command: |
+            curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+            mv /tmp/eksctl /usr/local/bin
+      - run:
+          name: EKS Cluster creation 
+          command: |
+            aws cloudformation list-exports > cluster.txt
+            cat cluster.txt
+            if [ $(grep -i "capstoneeks" cluster.txt | wc -l) -ge 1 ]
+              then
+              echo "already EKS Cluster exists in environment"
+              else
+              echo "creating the EKS cluster"
+              eksctl create cluster --name capstoneeks --version 1.23 --region us-west-2 --zones us-west-2a,us-west-2b --nodegroup-name capstonenodegrp --node-type t2.small --nodes-min 2 --nodes-max 4 --managed
+            fi
+
+      
 
   update_to_production:
     docker:
@@ -351,4 +388,5 @@ workflows:
       # - build_backed_to_dockerhub
       # - update_to_production: 
       #     requires: [build_backed_to_dockerhub]
-      - update_to_production
+      # - update_to_production
+      - create_cluster_if_not_exit
