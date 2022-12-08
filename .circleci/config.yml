@@ -262,6 +262,7 @@ jobs:
   update_to_production:
     docker:
       - image: circleci/python:3.7
+    steps:
       - run:
           name: Install kubectl
           command: |
