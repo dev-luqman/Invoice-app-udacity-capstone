@@ -286,23 +286,22 @@ jobs:
           name: Prepare K8S templates
           command: |
             aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $CLUSTER_NAME
-            rm -rf .circleci/.generated && mkdir -p .circleci/.generated
-            for f in .circleci/files/production_deployment/invoice_deployment.yml
-              do
-              envsubst < $f > ".circleci/files/production_deployment/$(basename $f)"
-            done
+            # rm -rf .circleci/.generated && mkdir -p .circleci/.generated
+            # for f in .circleci/files/production_deployment/invoice_deployment.yml
+            #   do
+            #   envsubst < $f > ".circleci/files/production_deployment/$(basename $f)"
+            # done
 
       - run:
           name: Deploy
           command: |
             cd .circleci/files/production_deployment
             ls
-            envsubst < invoice_deployment.yml
-            kubectl rollout -h
-            cat invoice_deployment.yml
-            kubectl rollout restart deployment invoice-node-deployment
-            # kubectl apply -f invoice_deployment.yml
-            # kubectl get pod
+            # envsubst < invoice_deployment.yml
+            # kubectl rollout -h
+            # cat invoice_deployment.yml
+            kubectl apply -f invoice_deployment.yml
+            kubectl get pod
 
 workflows:
   default:
@@ -323,7 +322,7 @@ workflows:
       # - deploy-backend:
       #     requires: [deploy-infrastructure]
 
-      - build_backed_to_dockerhub
-      # - update_to_production
-      - update_to_production: 
-          requires: [build_backed_to_dockerhub]
+      # - build_backed_to_dockerhub
+      - update_to_production
+      # - update_to_production: 
+      #     requires: [build_backed_to_dockerhub]
