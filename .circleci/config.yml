@@ -298,6 +298,7 @@ jobs:
             cd .circleci/files/production_deployment
             ls
             envsubst < invoice_deployment.yml
+            kubectl rollout -h
             cat invoice_deployment.yml
             kubectl rollout restart deployment invoice-node-deployment
             # kubectl apply -f invoice_deployment.yml
