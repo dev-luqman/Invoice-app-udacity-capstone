@@ -273,12 +273,7 @@ jobs:
       - run:
           name: Deploy
           command: |
-            cd backend 
-            ls
-            cd .circleci
-            ls
-            cd files
-            cd backend/.circleci/files/production_deployment
+            cd .circleci/files/production_deployment
             kubectl apply -f invoice_deployment.yml
             kubectl get pod
 
