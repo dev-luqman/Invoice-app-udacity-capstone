@@ -318,7 +318,7 @@ jobs:
             
       - run: kubectl get pod
       - run: sleep 13
-      - run: kubectl get pod
+      - run: kubectl describe pod
       - run: kubectl get pod
 
 workflows:
