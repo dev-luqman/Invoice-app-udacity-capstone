@@ -304,9 +304,9 @@ jobs:
       - run:
           name: Create eks Cluster if not created
           command: |
-            aws cloudformation list-exports > cluster.txt
-            cat clusterFile.txt
-            if [ $(grep -i "capstone_invoice-app" clusterFile.txt | wc -l) -ge 1 ]
+            aws cloudformation list-exports > saveFile.txt
+            cat saveFile.txt
+            if [ $(grep -i "capstone_invoice-app" saveFile.txt | wc -l) -ge 1 ]
               then
               echo "Cluster already created"
               else
