@@ -283,7 +283,7 @@ jobs:
           command: |
             aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $CLUSTER_NAME
             rm -rf .circleci/.generated && mkdir -p .circleci/.generated
-            for f in .circleci/files/production_deployment/templates/invoice_deployment.yml
+            for f in .circleci/files/production_deployment/invoice_deployment.yml
               do
               envsubst < $f > ".circleci/.generated/$(basename $f)"
             done
@@ -293,7 +293,7 @@ jobs:
           command: |
             cd .circleci/files/production_deployment
             ls
-            
+
             kubectl apply -f .k8s/.generated/ --validate=true
             kubectl get pod
 
