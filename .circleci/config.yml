@@ -306,13 +306,13 @@ jobs:
           command: |
             aws cloudformation list-exports > cluster.txt
             cat cluster.txt
-            # if [ $(grep -i "capstoneeks" cluster.txt | wc -l) -ge 1 ]
-            #   then
-            #   echo "already EKS Cluster exists in environment"
-            #   else
-            #   echo "creating the EKS cluster"
-            #   eksctl create cluster --name capstoneeks --version 1.23 --region us-west-2 --zones us-west-2a,us-west-2b --nodegroup-name capstonenodegrp --node-type t2.small --nodes-min 2 --nodes-max 4 --managed
-            # fi
+            if [ $(grep -i "capstoneeks" cluster.txt | wc -l) -ge 1 ]
+              then
+              echo "already EKS Cluster exists in environment"
+              else
+              echo "creating the EKS cluster"
+              # eksctl create cluster --name capstoneeks --version 1.23 --region us-east-2 --zones us-west-2a,us-west-2b --nodegroup-name capstonenodegrp --node-type t2.small --nodes-min 2 --nodes-max 4 --managed
+            fi
 
       
 
@@ -397,5 +397,5 @@ workflows:
       #     requires: [build_backed_to_dockerhub]
       # - update_to_production
       - create_cluster_if_not_exit
-      - update_to_production: 
-          requires: [create_cluster_if_not_exit]
+      # - update_to_production: 
+      #     requires: [create_cluster_if_not_exit]
