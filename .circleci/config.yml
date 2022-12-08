@@ -282,15 +282,19 @@ jobs:
           name: Prepare K8S templates
           command: |
             aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $CLUSTER_NAME
-            
+            rm -rf .circleci/.generated && mkdir -p .circleci/.generated
+            for f in .circleci/files/production_deployment/templates/invoice_deployment.yml
+              do
+              envsubst < $f > ".circleci/.generated/$(basename $f)"
+            done
 
       - run:
           name: Deploy
           command: |
             cd .circleci/files/production_deployment
             ls
-            kubectl get pod
-            kubectl apply -f invoice_deployment.yml
+            
+            kubectl apply -f .k8s/.generated/ --validate=true
             kubectl get pod
 
 workflows:
