@@ -3,7 +3,7 @@ const app = express()
 const bodyParser = require('body-parser')
 
 const mongoConnet = require('./utils/database').mongoConnet
-const { PORT } = require('./utils/config')
+const { PORT, VERSION, NODE_ENV } = require('./utils/config')
 
 const errorController = require('./controllers/errorController')
 const adminRoutes = require('./routes/auth')
@@ -40,6 +40,8 @@ app.get('/', (req, res) => {
     msg: 'Updated: Connection successfully',
     msg_location: 'CircleCi Pipeline',
     status: 'ok',
+    node_env: NODE_ENV,
+    version: `v-${VERSION}`,
     statusCode: 200,
   })
 })
