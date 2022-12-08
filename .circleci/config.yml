@@ -289,7 +289,6 @@ jobs:
 
             chmod +x ./kubectl
             sudo mv ./kubectl /usr/local/bin/kubectl
-            kubectl version
       - run:
           name: Install awscli and gettext-base
           command: |
@@ -314,6 +313,7 @@ jobs:
           command: |
             cd .circleci/files/production_deployment
             ls
+            
             # envsubst < invoice_deployment.yml | kubectl apply -f invoice_deployment.yml
             # cat invoice_deployment.yml
             # sudo cat invoice_deployment.yml
@@ -324,6 +324,7 @@ jobs:
       - run: sleep 13
       - run: kubectl describe pod
       - run: kubectl get pod
+      - run: kubectl apply help
 
 workflows:
   default:
