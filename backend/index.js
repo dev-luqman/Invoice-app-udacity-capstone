@@ -37,7 +37,8 @@ app.use(
 
 app.get('/', (req, res) => {
   res.status(200).json({
-    msg: 'Updated:latest-v2 Connection successfully',
+    msg: 'Updated: Connection successfully',
+    msg_location: 'CircleCi Pipeline',
     status: 'ok',
     statusCode: 200,
   })
