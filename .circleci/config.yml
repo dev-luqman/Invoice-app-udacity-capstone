@@ -299,7 +299,7 @@ jobs:
             sudo mv /tmp/eksctl /usr/local/bin
 
             eksctl version
-        - run: kubectl version
+      - run: kubectl version
             
 
 
