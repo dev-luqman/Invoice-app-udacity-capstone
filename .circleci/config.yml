@@ -227,22 +227,53 @@ jobs:
           id: ${CIRCLE_WORKFLOW_ID:0:7}
       - destroy-environment:
           id: invoice-frontend-${CIRCLE_WORKFLOW_ID:0:7}
+  
+  build:
+    build_backed_to_dockerhub:
+      - image: cimg/go:1.17
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD 
+    steps:
+      - checkout
+
+      - run: cd backend
+
+      - run: ls
+
+      - setup_remote_docker:
+          version: 20.10.14
+          docker_layer_caching: true
+
+      # build and push Docker image
+      - run: |
+          TAG=0.1.$CIRCLE_BUILD_NUM
+          docker build -t CircleCI-Public/circleci-demo-docker:$TAG .
+
+          docker image tag CircleCI-Public/circleci-demo-docker:$TAG lukhee/invoice-app:$CIRCLE_BUILD_NUM
+          docker image tag CircleCI-Public/circleci-demo-docker:$TAG lukhee/invoice-app:latest
+
+          echo $DOCKER_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
+          docker push lukhee/invoice-app:circleci.$CIRCLE_BUILD_NUM
+          docker push lukhee/invoice-app:latest
 
 workflows:
   default:
     jobs:
-      - build-frontend
-      - build-backend
+      # - build-frontend
+      # - build-backend
       # - test-frontend:
       #     requires: [build-frontend]
       # - test-backend:
       #     requires: [build-backend]
-      - deploy-infrastructure:
-          requires: [build-frontend, build-backend]
+      # - deploy-infrastructure:
+      #     requires: [build-frontend, build-backend]
           # filters:
           #   branches:
           #     only: [master]
       # - deploy-frontend:
       #     requires: [deploy-infrastructure]
-      - deploy-backend:
-          requires: [deploy-infrastructure]
+      # - deploy-backend:
+      #     requires: [deploy-infrastructure]
+
+      - build_backed_to_dockerhub
