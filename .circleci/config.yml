@@ -237,21 +237,20 @@ jobs:
     steps:
       - checkout
 
-      - run: cd backend
-
-      - run: ls
-
       - setup_remote_docker:
           version: 20.10.14
           docker_layer_caching: true
 
       # build and push Docker image
       - run: |
+          cd backend
+          ls
           TAG=0.1.$CIRCLE_BUILD_NUM
-          docker build -t CircleCI-Public/circleci-demo-docker:$TAG .
+          echo $CIRCLE_BUILD_NUM
+          docker build -t invoice-app:$TAG .
 
-          docker image tag CircleCI-Public/circleci-demo-docker:$TAG lukhee/invoice-app:$CIRCLE_BUILD_NUM
-          docker image tag CircleCI-Public/circleci-demo-docker:$TAG lukhee/invoice-app:latest
+          docker image tag invoice-app:$TAG lukhee/invoice-app:$CIRCLE_BUILD_NUM
+          docker image tag invoice-app:$TAG lukhee/invoice-app:latest
 
           echo $DOCKER_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
           docker push lukhee/invoice-app:circleci.$CIRCLE_BUILD_NUM
