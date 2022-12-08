@@ -297,4 +297,4 @@ workflows:
 
       - build_backed_to_dockerhub
       - update_to_production: 
-          required: [build_backed_to_dockerhub]
+          requires: [build_backed_to_dockerhub]
