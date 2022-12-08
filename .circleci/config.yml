@@ -275,7 +275,7 @@ jobs:
           command: |
             cd .circleci/files/production_deployment
             ls
-            kubectl set image deployment/invoice-node-deployment app-staging=lukhee/invoice-app:latest
+            kubectl set image deployment/invoice-node-deployment app-staging=lukhee/invoice-app:latest --validate=true
             kubectl get pod
 
 workflows:
@@ -297,7 +297,7 @@ workflows:
       # - deploy-backend:
       #     requires: [deploy-infrastructure]
 
-      - build_backed_to_dockerhub
-      # - update_to_production
-      - update_to_production: 
-          requires: [build_backed_to_dockerhub]
+      # - build_backed_to_dockerhub
+      - update_to_production
+      # - update_to_production: 
+      #     requires: [build_backed_to_dockerhub]
