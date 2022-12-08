@@ -289,9 +289,6 @@ jobs:
           command: |
             cd .circleci/files/production_deployment
             ls
-
-            kubectl version
-            kubectl config view
             kubectl get pod
             kubectl apply -f invoice_deployment.yml
             kubectl get pod
@@ -315,7 +312,7 @@ workflows:
       # - deploy-backend:
       #     requires: [deploy-infrastructure]
 
-      # - build_backed_to_dockerhub
-      - update_to_production
-      # - update_to_production: 
-      #     requires: [build_backed_to_dockerhub]
+      - build_backed_to_dockerhub
+      # - update_to_production
+      - update_to_production: 
+          requires: [build_backed_to_dockerhub]
