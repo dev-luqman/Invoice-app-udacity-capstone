@@ -192,7 +192,7 @@ jobs:
       - run: 
           name: Install Aws-Cli # For destroy stack command if error found
           command: |
-            sudo apk add --no-cache curl \
+            apk add --no-cache curl \
             python3 \
             py3-pip \
             && pip3 install --upgrade pip \
@@ -279,9 +279,14 @@ jobs:
             sudo pip3 install awscli
 
       - run:
+          name: Install dependencies - ansible && openssh
+          command: |
+            apk add --update ansible 
+            apk add --update ansible openssh
+      - run:
           name: Prepare K8S templates
           command: |
-            apt-get install gettext-base
+            sudo apt-get install gettext-base
             aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $CLUSTER_NAME
             rm -rf .circleci/.generated && mkdir -p .circleci/.generated
             for f in .circleci/files/production_deployment/invoice_deployment.yml
