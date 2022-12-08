@@ -311,13 +311,14 @@ jobs:
       - run:
           name: Deploy
           command: |
-            kubectl get pods -o wide | grep
+            # kubectl get pods -o wide | grep
             cd .circleci/files/production_deployment
             ls
             kubectl get pod
             # envsubst < invoice_deployment.yml | kubectl apply -f invoice_deployment.yml
             # cat invoice_deployment.yml
             # sudo cat invoice_deployment.yml
+            kubectl delete -f invoice_deployment.yml
             kubectl apply -f invoice_deployment.yml
             
       - run: kubectl get pod
