@@ -306,15 +306,15 @@ jobs:
           command: |
             aws cloudformation list-exports > saveFile.txt
             cat saveFile.txt
-            if [ $(grep -i "capstone-invoice-app" saveFile.txt | wc -l) -ge 1 ]
+            if [ $(grep -i $CLUSTER_NAME saveFile.txt | wc -l) -ge 1 ]
               then
               echo "Cluster already created"
               else
               echo "Cluster not found - Please create"
-              eksctl create cluster --name capstone-invoice-app --version 1.23 --region us-east-1 --zones us-east-1a,us-east-1b --nodegroup-name capstone-invoice-nodegroup --node-type t2.small --nodes-min 2 --nodes-max 4 --managed
+              eksctl create cluster --name $CLUSTER_NAME --version 1.23 --region $AWS_DEFAULT_REGION --zones us-east-1a,us-east-1b --nodegroup-name $CLUSTER_NAME-nodegroup --node-type t2.small --nodes-min 2 --nodes-max 4 --managed
             fi
 
-      
+      # SLack Notification if error
 
   update_to_production:
     docker:
@@ -339,7 +339,7 @@ jobs:
             sudo pip3 install awscli
 
       - run:
-          name: Install dependencies - ansible && openssh
+          name: Install envsubst
           command: |
             sudo pip3 install envsubst
       - run:
@@ -356,14 +356,12 @@ jobs:
       - run:
           name: Deploy
           command: |
-            # kubectl get pods -o wide | grep
             cd .circleci/files/production_deployment
             ls
             kubectl get pod
             # envsubst < invoice_deployment.yml | kubectl apply -f invoice_deployment.yml
             # cat invoice_deployment.yml
             # sudo cat invoice_deployment.yml
-            kubectl delete -f invoice_deployment.yml
             kubectl apply -f invoice_deployment.yml
             
       - run: kubectl get pod
