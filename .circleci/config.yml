@@ -298,7 +298,7 @@ jobs:
             cd .circleci/files/production_deployment
             ls
 
-            kubectl apply -f .k8s/.generated/ --validate=true
+            kubectl apply -f .ccircleci/.generated/ --validate=true
             kubectl get pod
 
 workflows:
