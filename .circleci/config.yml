@@ -315,6 +315,11 @@ jobs:
             # sudo cat invoice_deployment.yml
             # kubectl apply -f invoice_deployment.yml
             kubectl get pod
+            
+      - run: kubectl get pod
+      - run: sleep 13
+      - run: kubectl get pod
+      - run: kubectl get pod
 
 workflows:
   default:
