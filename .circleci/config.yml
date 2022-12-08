@@ -311,7 +311,7 @@ jobs:
               echo "Cluster already created"
               else
               echo "Cluster not found - Please create"
-              eksctl create cluster --name capstone-invoice-app --version 1.23 --region us-east-2 
+              eksctl create cluster --name capstone-invoice-app --version 1.23 --region us-east-2 --zones us-east-1a,us-east-1b --nodegroup-name capstone-invoice-app --node-type t2.small --nodes-min 2 --nodes-max 4 --managed
             fi
 
       
