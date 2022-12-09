@@ -377,7 +377,7 @@ jobs:
               kubectl apply -f invoice_deployment.yml
             else
               echo "Rollout and Update Deployment"
-            kubectl rollout restart deployment/invoice-node-deployment
+              kubectl rollout restart deployment/invoice-node-deployment
             fi
             kubectl get pods
             kubectl get pods
