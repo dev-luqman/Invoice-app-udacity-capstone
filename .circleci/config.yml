@@ -399,6 +399,7 @@ workflows:
       #     requires: [deploy-infrastructure]
 
       - build_backed_to_dockerhub
-      - create_cluster_if_not_exit
+      - create_cluster_if_not_exit:
+          requires: [build_backed_to_dockerhub]
       - update_to_production: 
           requires: [create_cluster_if_not_exit]
