@@ -50,6 +50,25 @@ jobs:
             cd backend
             npm i
             npm audit
+
+  test-docker-file: 
+      docker:
+        - image: python:3.7.3-stretch
+
+      working_directory: ~/repo
+      steps:
+        - checkout
+        - run:
+            name: install hadolink
+            command: |
+              # Install hadolint
+              wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64 &&\
+              chmod +x /bin/hadolint
+        - run:
+            name: run test/lint
+            command: |
+              cd backend
+              hadolint Dockerfile
   
   build_backed_to_dockerhub:
     docker:
@@ -232,15 +251,16 @@ workflows:
           #   branches:
           #     only: [master]
 
-      - build-backend
-      - audit-backend:
-          requires: [build-backend]
+      # - build-backend
+      # - audit-backend:
+      #     requires: [build-backend]
           # filters:
           #   branches:
           #     only: [master]
-      - build_backed_to_dockerhub:
-          requires: [audit-backend]
-      - create_cluster_if_not_exit:
-          requires: [build_backed_to_dockerhub]
-      - update_to_production: 
-          requires: [create_cluster_if_not_exit]
+      - test-docker-file
+      # - build_backed_to_dockerhub:
+      #     requires: [audit-backend]
+      # - create_cluster_if_not_exit:
+      #     requires: [build_backed_to_dockerhub]
+      # - update_to_production: 
+      #     requires: [create_cluster_if_not_exit]
