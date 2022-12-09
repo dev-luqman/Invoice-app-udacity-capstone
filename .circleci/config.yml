@@ -15,8 +15,6 @@ commands:
             echo "Error Found!!! please deleting cluster now!!!"
             eksctl delete cluster --name=<< parameters.clusterName >>
 
-
-
 jobs:
   build-backend:
     docker:
@@ -39,7 +37,7 @@ jobs:
             cd backend && 
             npm run lint
 
-  test-backend:
+  audit-backend:
     docker:
       - image: circleci/node:13.8.0
     steps:
@@ -51,7 +49,7 @@ jobs:
           command: |
             cd backend
             npm i
-            npm run test
+            npm audit
   
   build_backed_to_dockerhub:
     docker:
@@ -235,10 +233,11 @@ workflows:
           #     only: [master]
 
       - build-backend
-      - test-backend:
+      - audit-backend:
           requires: [build-backend]
+      - build_backed_to_dockerhub
       - build_backed_to_dockerhub:
-          requires: [test-backend]
+          requires: [audit-backend]
       - create_cluster_if_not_exit:
           requires: [build_backed_to_dockerhub]
       - update_to_production: 
