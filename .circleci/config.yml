@@ -311,9 +311,9 @@ jobs:
               echo "Cluster already created"
               else
               echo "Cluster not found - Please create"
-              # eksctl create cluster --name $CLUSTER_NAME
+              eksctl create cluster --name $CLUSTER_NAME
 
-              eksctl create cluster --name $CLUSTER_NAME --version 1.23 --region us-west-1b --zones us-west-1a,us-west-1b --nodegroup-name $CLUSTER_NAME-nodegroup --node-type t2.small --nodes-min 2 --nodes-max 4 --managed
+              # eksctl create cluster --name $CLUSTER_NAME --version 1.23 --region us-west-1b --zones us-west-1a,us-west-1b --nodegroup-name $CLUSTER_NAME-nodegroup --node-type t2.small --nodes-min 2 --nodes-max 4 --managed
             fi
 
       # SLack Notification if error
