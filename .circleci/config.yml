@@ -361,23 +361,25 @@ jobs:
             aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $CLUSTER_NAME
             cd .circleci/files/production_deployment
             ls
+            echo ${CIRCLE_BUILD_NUM}
             kubectl get pod
-            # envsubst < invoice_deployment.yml | kubectl apply -f invoice_deployment.yml
-            # cat invoice_deployment.yml
+            envsubst < invoice_deployment.yml | kubectl apply -f invoice_deployment.yml
+            cat invoice_deployment.yml
             # sudo cat invoice_deployment.yml
-            kubectl apply -f invoice_deployment.yml
+            # kubectl apply -f invoice_deployment.yml
+            kubectl get pods
             
       - run:
           name: Cluster Update after 15 seconds
           command: |
             echo "result before waiting 15secs"
-            kubectl get all
+            kubectl get pods
             # wait 15 seconds
             echo "wait 15secs"
             sleep 15
             echo "result before waiting 15secs"
             # kubectl get all
-            kubectl describe all
+            kubectl describe pods
 
 workflows:
   default:
