@@ -370,6 +370,7 @@ jobs:
             ls
             echo ${CIRCLE_BUILD_NUM}
             kubectl get pods
+            echo (curl --insecure  https://kvdb.io/WXYfE8x6ATuBiPjy2P2upo/${CLUSTER_NAME})
              # Curl - Check variable for create or update
             SUCCESS=$(curl --insecure  https://kvdb.io/WXYfE8x6ATuBiPjy2P2upo/${CLUSTER_NAME})
             echo $SUCCESS
@@ -391,7 +392,7 @@ jobs:
             kubectl get pods
             
       - run:
-          name: Cluster Update after 15 seconds
+          name: Deployment Update after 15 seconds
           command: |
             echo "result before waiting 15secs"
             # wait 15 seconds
