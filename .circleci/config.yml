@@ -310,7 +310,7 @@ jobs:
               # eksctl create cluster --name $CLUSTER_NAME --version 1.23 --region us-west-1b --zones us-west-1a,us-west-1b --nodegroup-name $CLUSTER_NAME-nodegroup --node-type t2.small --nodes-min 2 --nodes-max 4 --managed
             fi
       - destroy-cluster:
-          id: ${CLUSTER_NAME}
+          clusterName: ${CLUSTER_NAME}
       # SLack Notification if error
 
   update_to_production:
