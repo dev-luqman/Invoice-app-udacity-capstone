@@ -15,26 +15,9 @@ commands:
             echo "Error Found!!! please deleting cluster now!!!"
             eksctl delete cluster --name=<< parameters.clusterName >>
 
-jobs:
-  build-frontend:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - restore_cache:
-          keys: [frontend-build]
-      - run:
-          name: Install front-end Package
-          command: |
-            cd frontend && npm i
-      - save_cache:
-          paths: [frontend/node_modules]
-          key: frontend-build
-      - run:
-          name: Build front-end
-          command: |
-            cd frontend && npm run build
 
+
+jobs:
   build-backend:
     docker:
       - image: circleci/node:13.8.0
@@ -56,20 +39,6 @@ jobs:
             cd backend && 
             npm run lint
 
-  test-frontend:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - restore_cache:
-          keys: [frontend-build]
-      - run:
-          name: Test Frontend
-          command: |
-            cd frontend
-            npm i
-            npm run test
-
   test-backend:
     docker:
       - image: circleci/node:13.8.0
@@ -83,137 +52,6 @@ jobs:
             cd backend
             npm i
             npm run test
-
-  deploy-infrastructure:
-    docker:
-      - image: amazon/aws-cli
-    steps:
-      - checkout
-      - run:
-          name: Ensure back-end infrastructure exists
-          command: |
-            aws cloudformation deploy \
-              --template-file .circleci/files/backend.yml \
-              --tags project=invoice \
-              --stack-name "invoice-backend-${CIRCLE_WORKFLOW_ID:0:7}"  \
-              --parameter-overrides ID=${CIRCLE_WORKFLOW_ID:0:7} 
-      - run:
-          name: Ensure front-end infrastructure exist
-          command: |
-            aws cloudformation deploy \
-              --template-file .circleci/files/frontend.yml \
-              --tags project=invoice \
-              --stack-name "invoice-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
-      - run:
-          name: Add back-end ip to ansible inventory
-          command: |
-            aws cloudformation list-exports \
-             --query "Exports[?Name==\`EC2InstanceDNSName-${CIRCLE_WORKFLOW_ID:0:7}\`].Value" --no-paginate --output text >> .circleci/ansible/inventory.txt
-      - run: cat .circleci/ansible/inventory.txt
-      - run:
-          name: Install tar utility
-          command: |
-            yum install -y tar gzip
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - project/.circleci/ansible/inventory.txt
-      - destroy-environment:
-          id: invoice-backend-${CIRCLE_WORKFLOW_ID:0:7}
-      - destroy-environment:
-          id: invoice-frontend-${CIRCLE_WORKFLOW_ID:0:7}
-
-  deploy-frontend:
-    docker:
-      - image: amazon/aws-cli
-    steps:
-      - checkout 
-      - run:
-          name: Install dependencies
-          command: |
-            yum install -y tar gzip
-            curl --silent --location https://rpm.nodesource.com/setup_10.x | bash -
-            yum -y install nodejs
-      - run:
-          name: Get backend url
-          command: |
-            export BACKEND_API=$(aws cloudformation list-exports \
-             --query "Exports[?Name==\`EC2InstanceDNSName-${CIRCLE_WORKFLOW_ID:0:7}\`].Value" --no-paginate --output text)
-            export REACT_APP_BASE_URL="http://${BACKEND_API}:8080/api"
-            echo "${REACT_APP_BASE_URL}"
-            echo REACT_APP_BASE_URL="http://${BACKEND_API}:8080/api" >> frontend/.env
-            cat frontend/.env
-      - run:
-          name: Deploy frontend objects
-          command: |
-            cd frontend
-            npm install
-            npm run build
-            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
-            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-
-      - run:
-          name: Expose Frontend url (S3-bucket-url)
-          command: |
-            aws cloudformation list-exports \
-             --query "Exports[?Name==\`WebsiteURL-${CIRCLE_WORKFLOW_ID:0:7}\`].Value" --no-paginate --output text 
-      # Here's where you will add some code to rollback on failure
-      - destroy-s3-bucketfile: 
-          id: ${CIRCLE_WORKFLOW_ID:0:7}
-      - destroy-environment:
-          id: invoice-backend-${CIRCLE_WORKFLOW_ID:0:7}
-      - destroy-environment:
-          id: invoice-frontend-${CIRCLE_WORKFLOW_ID:0:7}
-
-  deploy-backend:
-    docker:
-      - image: python:3.7-alpine3.11
-    steps:
-      - checkout
-      - add_ssh_keys:
-          fingerprints:   ["a0:36:7e:be:48:8f:4b:9f:8d:ab:27:44:3b:65:85:15"]
-      # attach workspace
-      - attach_workspace:
-          at: ~/
-      - run: 
-          name: Install Aws-Cli # For destroy stack command if error found
-          command: |
-            apk add --no-cache curl \
-            python3 \
-            py3-pip \
-            && pip3 install --upgrade pip \
-            && pip3 install --no-cache-dir \
-                awscli \
-            && rm -rf /var/cache/apk/*
-      - run:
-          name: Install dependencies - ansible && openssh
-          command: |
-            apk add --update ansible 
-            apk add --update ansible openssh
-      - run:
-          name: Installing tar & gzip for zipping of file
-          command: |
-            apk add --update tar gzip 
-      - run:
-          name: Install Node and npm
-          command: |
-            apk add --update nodejs nodejs-npm
-      - run:
-          name: Deploy backend
-          command: |
-            # Zip the directory
-            tar -C backend -czvf artifact.tar.gz .
-            cd .circleci/ansible
-            echo "Contents  of the inventory.txt file is -------"
-            ansible-playbook -i inventory.txt deploy-backend.yml
-      # Here's where you will add some code to rollback on failure  
-      - destroy-environment:
-          id: invoice-backend-${CIRCLE_WORKFLOW_ID:0:7}
-      - destroy-s3-bucketfile: 
-          id: ${CIRCLE_WORKFLOW_ID:0:7}
-      - destroy-environment:
-          id: invoice-frontend-${CIRCLE_WORKFLOW_ID:0:7}
   
   build_backed_to_dockerhub:
     docker:
@@ -390,23 +228,17 @@ jobs:
 workflows:
   default:
     jobs:
-      # - build-frontend
-      # - build-backend
-      # - test-frontend:
-      #     requires: [build-frontend]
-      # - test-backend:
-      #     requires: [build-backend]
       # - deploy-infrastructure:
       #     requires: [build-frontend, build-backend]
           # filters:
           #   branches:
           #     only: [master]
-      # - deploy-frontend:
-      #     requires: [deploy-infrastructure]
-      # - deploy-backend:
-      #     requires: [deploy-infrastructure]
 
-      - build_backed_to_dockerhub
+      - build-backend
+      - test-backend:
+          requires: [build-backend]
+      - build_backed_to_dockerhub:
+          requires: [test-backend]
       - create_cluster_if_not_exit:
           requires: [build_backed_to_dockerhub]
       - update_to_production: 
