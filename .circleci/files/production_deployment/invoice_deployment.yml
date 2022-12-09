@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
         - name: app-staging
-          # image: lukhee/invoice-app:latest
-          image: lukhee/invoice-app:circleci.219
+          image: lukhee/invoice-app:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
 
