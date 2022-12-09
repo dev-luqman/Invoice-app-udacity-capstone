@@ -45,7 +45,7 @@ jobs:
       - restore_cache:
           keys: [backend-build]
       - run:
-          name: Test Backend
+          name: Build Backend
           command: |
             cd backend
             npm i
@@ -197,7 +197,7 @@ jobs:
              # Curl - Check variable for create or update
             SUCCESS=$(curl --insecure  https://kvdb.io/WXYfE8x6ATuBiPjy2P2upo/${CLUSTER_NAME})
             echo $SUCCESS
-            if $SUCCESS==1
+            if [$SUCCESS==1]
             then
               echo "Create New Deployment"
               kubectl apply -f invoice_deployment.yml
@@ -235,6 +235,9 @@ workflows:
       - build-backend
       - audit-backend:
           requires: [build-backend]
+          # filters:
+          #   branches:
+          #     only: [master]
       - build_backed_to_dockerhub:
           requires: [audit-backend]
       - create_cluster_if_not_exit:
