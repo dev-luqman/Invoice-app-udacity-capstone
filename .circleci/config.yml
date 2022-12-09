@@ -235,7 +235,6 @@ workflows:
       - build-backend
       - audit-backend:
           requires: [build-backend]
-      - build_backed_to_dockerhub
       - build_backed_to_dockerhub:
           requires: [audit-backend]
       - create_cluster_if_not_exit:
