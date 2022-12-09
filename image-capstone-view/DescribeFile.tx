@@ -2,6 +2,8 @@ Web Url = http://a0537a5ddef944cd4ac198c1f4e5409b-1949515716.us-east-1.elb.amazo
 
 github url = https://github.com/dev-luqman/Invoice-app-udacity-capstone
 
+dockerhubLink = https://hub.docker.com/repository/docker/lukhee/invoice-app
+
 image tag and description
 001: Cluster Createtion
 002: Pipeline Overview
@@ -13,3 +15,9 @@ image tag and description
 007: Describe View of pod
 008: API test - after deployment
 010: Web view
+
+After review result
+011: failed Lint test and pass linked test is reference at image = 003A
+013: Ec2 instance created - 2nodegroup
+014: Dockerhub repository
+012: Cloudformation result - this was done using eks cluster which made it easy to create cluster by just specifying some few parameters like name, number of nodegroup and so on, this approach was thought in the last lesson : Microservice at scale using aws and kubernetes and the result of the creation is showned in the pipeline, reference to image = 001 and 015
