@@ -81,6 +81,17 @@ jobs:
       - setup_remote_docker:
           version: 20.10.14
           docker_layer_caching: true
+            
+      - run:
+          name: Store Image Tag - for health  test in production 
+          command: |
+            ls
+            echo $CIRCLE_BUILD_NUM > .circleci/files/store.txt
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/files/store.txt
+
       - run: 
           name: Save all db varibles in envs file 
           command: |
@@ -142,17 +153,6 @@ jobs:
 
             curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
             sudo mv /tmp/eksctl /usr/local/bin
-            
-      - run:
-          name: Store Image Tag 
-          command: |
-            ls
-            echo $CIRCLE_BUILD_NUM > .circleci/files/store.txt
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - project/.circleci/files/store.txt
-
       - run:
           name: Create eks Cluster if not created
           command: |
@@ -273,12 +273,13 @@ jobs:
           name: Backend smoke test.
           command: |
             export API_URL="http://a0537a5ddef944cd4ac198c1f4e5409b-1949515716.us-east-1.elb.amazonaws.com:8080/"
-            ls
-            cat .circleci/files/store.txt
-            if curl "${API_URL}" | grep "ok"
+            CHECK_VALUE=cat .circleci/files/store.txt
+            echo ${CHECK_VALUE}
+            if curl "${API_URL}" | grep "v-${CHECK_VALUE}"
             then
               echo "HEY!!!!!!!!!! "
-              echo " I AM OK!!! "
+              echo "I AM OK!!! "
+              echo "v-${CHECK_VALUE} is updated! "
                 return 0
             else
               echo "SAD !!!!!!!!! "
