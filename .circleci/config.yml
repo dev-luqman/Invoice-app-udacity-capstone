@@ -367,12 +367,16 @@ jobs:
             # sudo cat invoice_deployment.yml
             kubectl apply -f invoice_deployment.yml
             
-      - run: kubectl get pod
-      - run: sleep 13
-      - run: kubectl describe pod
-      - run: kubectl get pod
-      - run: kubectl get nodes
-      - run: kubectl describe deployment
+      - run:
+          name: Cluster Update after 15 seconds
+          command: |
+            echo "result before waiting 15secs"
+            kubectl get all
+            # wait 15 seconds
+            echo "wait 15secs"
+            sleep 15
+            echo "result before waiting 15secs"
+            kubectl get all
 
 workflows:
   default:
@@ -398,5 +402,5 @@ workflows:
       #     requires: [build_backed_to_dockerhub]
       # - update_to_production
       - create_cluster_if_not_exit
-      # - update_to_production: 
-      #     requires: [create_cluster_if_not_exit]
+      - update_to_production: 
+          requires: [create_cluster_if_not_exit]
