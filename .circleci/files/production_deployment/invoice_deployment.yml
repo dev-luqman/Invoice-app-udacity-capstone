@@ -34,8 +34,3 @@ spec:
       port: 8080
       targetPort: 8080
 
-
-
-
-          # image: lukhee/invoice-app:circleci.${CIRCLE_BUILD_NUM}
-
