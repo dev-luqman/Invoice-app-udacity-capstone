@@ -197,7 +197,7 @@ jobs:
              # Curl - Check variable for create or update
             SUCCESS=$(curl --insecure  https://kvdb.io/WXYfE8x6ATuBiPjy2P2upo/${CLUSTER_NAME})
             echo $SUCCESS
-            if [($SUCCESS==1)]
+            if [$SUCCESS==1]
             then
               echo "Create New Deployment"
               kubectl apply -f invoice_deployment.yml
@@ -238,10 +238,9 @@ workflows:
           # filters:
           #   branches:
           #     only: [master]
-      # - build_backed_to_dockerhub:
-      #     requires: [audit-backend]
-      # - create_cluster_if_not_exit:
-      #     requires: [build_backed_to_dockerhub]
-      - update_to_production
-      # - update_to_production: 
-      #     requires: [create_cluster_if_not_exit]
+      - build_backed_to_dockerhub:
+          requires: [audit-backend]
+      - create_cluster_if_not_exit:
+          requires: [build_backed_to_dockerhub]
+      - update_to_production: 
+          requires: [create_cluster_if_not_exit]
