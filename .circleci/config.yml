@@ -376,7 +376,8 @@ jobs:
             echo "wait 15secs"
             sleep 15
             echo "result before waiting 15secs"
-            kubectl get all
+            # kubectl get all
+            kubectl describe all
 
 workflows:
   default:
