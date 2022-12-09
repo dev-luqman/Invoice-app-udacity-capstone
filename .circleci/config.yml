@@ -2,31 +2,18 @@ version: 2.1
 orbs:
   slack: circleci/slack@4.10.1
 commands:
-  destroy-environment:
-    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+  destroy-cluster:
+    description: Delete cluster if encounter error.
     parameters:
-      id: 
+      clusterName: 
         type: string
     steps:
       - run:
           name: Destroy environments
           when: on_fail
           command: |
-            # Delete Stack if error
-            aws cloudformation delete-stack --stack-name << parameters.id >>
-
-  destroy-s3-bucketfile:
-    description: Delete S3Bucket files in frontend with workflow ID.
-    parameters:
-      id: 
-        type: string
-    steps:
-      - run:
-          name: Destroy environments
-          when: on_fail
-          command: |
-            # delete file in s3 buckets if exit
-            aws s3 rm s3://invoice-<< parameters.id >> --recursive
+            echo "Error Found!!! please deleting cluster now!!!"
+            eksctl delete cluster --name=<< parameters.clusterName >>
 
 jobs:
   build-frontend:
@@ -307,12 +294,12 @@ jobs:
             aws cloudformation list-exports > saveFile.txt
             # cat saveFile.txt
             if [ $(grep -i $CLUSTER_NAME saveFile.txt | wc -l) -ge 1 ]
-              then
+            then
               echo "Cluster already created"
               echo "SetUp Variable for creation of pods"
               curl -d '1'  https://kvdb.io/WXYfE8x6ATuBiPjy2P2upo/${CLUSTER_NAME}
 
-              else
+            else
               
               echo "SetUp Variable for creation of pods"
               curl -d '0'  https://kvdb.io/WXYfE8x6ATuBiPjy2P2upo/${CLUSTER_NAME}
@@ -322,7 +309,8 @@ jobs:
 
               # eksctl create cluster --name $CLUSTER_NAME --version 1.23 --region us-west-1b --zones us-west-1a,us-west-1b --nodegroup-name $CLUSTER_NAME-nodegroup --node-type t2.small --nodes-min 2 --nodes-max 4 --managed
             fi
-
+      - destroy-cluster:
+          id: ${CLUSTER_NAME}
       # SLack Notification if error
 
   update_to_production:
