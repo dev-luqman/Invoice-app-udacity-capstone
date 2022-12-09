@@ -144,6 +144,11 @@ jobs:
             sudo mv /tmp/eksctl /usr/local/bin
             
       - run:
+          name: Store Image Tag 
+          command: |
+            echo $CIRCLE_BUILD_NUM > store.txt
+
+      - run:
           name: Create eks Cluster if not created
           command: |
             aws cloudformation list-exports > saveFile.txt
@@ -261,6 +266,7 @@ jobs:
           name: Backend smoke test.
           command: |
             export API_URL="http://a0537a5ddef944cd4ac198c1f4e5409b-1949515716.us-east-1.elb.amazonaws.com:8080/"
+            cat store.txt
             if curl "${API_URL}" | grep "ok"
             then
               echo "HEY!!!!!!!!!! "
