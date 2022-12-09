@@ -1,0 +1,13 @@
+Web Url = http://a0537a5ddef944cd4ac198c1f4e5409b-1949515716.us-east-1.elb.amazonaws.com:8080/
+
+image tag and description
+001: Cluster Createtion
+002: Pipeline Overview
+003: Audit Job
+003A: Lint Job
+004: Image build and push to docker repository
+005: Cluster check if not created
+006: cluster/pods/image update Job
+007: Describe View of pod
+008: API test - after deployment
+010: Web view
