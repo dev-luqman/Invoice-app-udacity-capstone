@@ -242,7 +242,7 @@ jobs:
             sleep 15
             kubectl describe pods
 
-  api-smoke-test:
+  api-health-check:
     docker:
       - image: python:3.7-alpine3.11
     steps:
@@ -257,17 +257,11 @@ jobs:
             && pip3 install --no-cache-dir \
                 awscli \
             && rm -rf /var/cache/apk/*
-      - run: apk add --update nodejs nodejs-npm 
-      - run:
-          name: Get backend url
-          command: |
-            aws cloudformation list-exports \
-            --query "Exports[?Name==\`EC2InstanceDNSName-${CIRCLE_WORKFLOW_ID:0:7}\`].Value" --no-paginate --output text >> backendIpStore
       - run:
           name: Backend smoke test.
           command: |
             export API_URL="http://a0537a5ddef944cd4ac198c1f4e5409b-1949515716.us-east-1.elb.amazonaws.com:8080/"
-            if curl "${API_URL}/api/status" | grep "ok"
+            if curl "${API_URL}" | grep "ok"
             then
               echo "HEY!!!!!!!!!! "
               echo " I AM OK!!! "
@@ -276,17 +270,6 @@ jobs:
               echo "SAD !!!!!!!!! "
               echo "PLEASE CHECK ME!! "
                 return 1
-            fi
-      - run:
-          name: Frontend smoke test.
-          command: |
-            export URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/#/employees"            
-            echo ${URL} 
-            if curl -s ${URL} | grep "Welcome"
-            then
-              return 0
-            else
-              return 1
             fi
 
 workflows:
@@ -312,5 +295,5 @@ workflows:
           requires: [build_backed_to_dockerhub]
       - update_to_production: 
           requires: [create_cluster_if_not_exit]
-      - api-smoke-test:
+      - api-health-check:
           requires: [update_to_production]
