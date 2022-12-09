@@ -360,7 +360,7 @@ jobs:
             kubectl get pods
              # Curl - Check variable for create or update
             SUCCESS=$(curl --insecure  https://kvdb.io/WXYfE8x6ATuBiPjy2P2upo/${CLUSTER_NAME})
-            echo type($SUCCESS)
+            print("The variable, name is of type:", type($SUCCESS))
             echo $SUCCESS
             if $SUCCESS==1
             then
