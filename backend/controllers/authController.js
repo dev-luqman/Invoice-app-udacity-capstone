@@ -1,7 +1,7 @@
 const Admin = require('../models/User')
 
 exports.createAdmin = (req, res, next) => {
-  const name = req.body.name
+  const name req.body.name
   const email = req.body.email
   const password = req.body.password
   const phoneNo = req.body.phoneNo
