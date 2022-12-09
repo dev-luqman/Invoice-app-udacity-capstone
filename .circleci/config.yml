@@ -365,7 +365,7 @@ jobs:
             kubectl get pods
             # envsubst < invoice_deployment.yml | kubectl apply -f invoice_deployment.yml
             cat invoice_deployment.yml
-            kubectl rollout restart
+            kubectl rollout restart deployment/invoice-node-deployment
             # kubectl apply -f invoice_deployment.yml
             kubectl get pods
             kubectl get pods
