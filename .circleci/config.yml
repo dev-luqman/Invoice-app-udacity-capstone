@@ -305,7 +305,7 @@ jobs:
           name: Create eks Cluster if not created
           command: |
             aws cloudformation list-exports > saveFile.txt
-            cat saveFile.txt
+            # cat saveFile.txt
             if [ $(grep -i $CLUSTER_NAME saveFile.txt | wc -l) -ge 1 ]
               then
               echo "Cluster already created"
@@ -370,9 +370,18 @@ jobs:
             ls
             echo ${CIRCLE_BUILD_NUM}
             kubectl get pods
-            echo (curl --insecure  https://kvdb.io/WXYfE8x6ATuBiPjy2P2upo/${CLUSTER_NAME})
              # Curl - Check variable for create or update
             SUCCESS=$(curl --insecure  https://kvdb.io/WXYfE8x6ATuBiPjy2P2upo/${CLUSTER_NAME})
+            echo $SUCCESS
+            echo $SUCCESS
+            echo $SUCCESS
+            echo $SUCCESS
+            echo $SUCCESS
+            echo $SUCCESS
+            echo $SUCCESS
+            echo $SUCCESS
+            echo $SUCCESS
+            echo $SUCCESS
             echo $SUCCESS
             if $SUCCESS==1
             then
