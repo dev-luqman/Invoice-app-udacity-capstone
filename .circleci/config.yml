@@ -146,7 +146,12 @@ jobs:
       - run:
           name: Store Image Tag 
           command: |
-            echo $CIRCLE_BUILD_NUM > store.txt
+            ls
+            echo $CIRCLE_BUILD_NUM > .circleci/files/store.txt
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/files/store.txt
 
       - run:
           name: Create eks Cluster if not created
@@ -252,6 +257,8 @@ jobs:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
+      - attach_workspace:
+          at: ~/
       - run:
           name: Install dependencies
           command: |
@@ -266,7 +273,8 @@ jobs:
           name: Backend smoke test.
           command: |
             export API_URL="http://a0537a5ddef944cd4ac198c1f4e5409b-1949515716.us-east-1.elb.amazonaws.com:8080/"
-            cat store.txt
+            ls
+            cat .circleci/files/store.txt
             if curl "${API_URL}" | grep "ok"
             then
               echo "HEY!!!!!!!!!! "
