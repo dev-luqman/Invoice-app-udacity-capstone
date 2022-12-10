@@ -15,6 +15,9 @@ The main scope of the application is to apply my DevOps ` CICD ` skills to a bac
 4. Deploy services and pod to kubernetes ~ ` few checks/validation for update pods update `
 5. API Health and Deployment Validation
 
+
+[Pipeline_Scope](./image-capstone-view/pipelineScope.png)
+
 ### Project Scopes
 * Creating Backend - using node.js express ` cd backend `  folder
 * Creating frontend - using react.js ` cd frontend `  folder
