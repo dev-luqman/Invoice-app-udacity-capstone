@@ -32,7 +32,7 @@ You can check [image-capstone](https://github.com/dev-luqman/Invoice-app-udacity
 5. Create .env file and update content with [sample.env](https://github.com/dev-luqman/Invoice-app-udacity-capstone/blob/main/backend/sample.env)
 6. Install Packages ` npm install `
 7. Run Command ` npm run dev ` 
-8. Test api status ` localhost:8080/api/status `
+8. Test api status ` localhost:8080 `
 9. Result with  status code 200 is fine:
 ```
 {
