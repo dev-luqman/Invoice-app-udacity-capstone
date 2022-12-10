@@ -32,7 +32,7 @@ jobs:
           paths: [backend/node_modules]
           key: backend-build
       - run:
-          name: Build Back-end
+          name: Lint Test
           command: |
             cd backend && 
             npm run lint
