@@ -25,6 +25,18 @@ The main scope of the application is to apply my DevOps ` CICD ` skills to a bac
 * Creating deploy - using AWS eks 
 * Creating monitory - using prometheus server and grafana
 
+<details>
+<summary>Pipeline Tools/Requirements</summary>
+
+| Rank | Languages |
+|-----:|-----------|
+|     1| Github    |
+|     2| Docker    |
+|     3| AWS       |
+|     4| EKS       |
+  
+</details>
+
 You can check [image-capstone](https://github.com/dev-luqman/Invoice-app-udacity-capstone/tree/main/image-capstone-view) directory for review of my pipeline result
 
 ### Running the application locally
@@ -48,18 +60,6 @@ You can check [image-capstone](https://github.com/dev-luqman/Invoice-app-udacity
   }
 
 ```
-
-<details>
-<summary>Pipeline Tools/Requirements</summary>
-
-| Rank | Languages |
-|-----:|-----------|
-|     1| Github    |
-|     2| Docker    |
-|     3| AWS       |
-|     4| EKS       |
-  
-</details>
 
 
 > please stay tune and follow more update.
