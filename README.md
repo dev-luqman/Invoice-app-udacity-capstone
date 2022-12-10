@@ -49,4 +49,17 @@ You can check [image-capstone](https://github.com/dev-luqman/Invoice-app-udacity
 
 ```
 
-#### ~ please stay tune and follow more update. ~
+<details>
+<summary>Pipeline Tools/Requirements</summary>
+
+| Rank | Languages |
+|-----:|-----------|
+|     1| Github    |
+|     2| Docker    |
+|     3| AWS       |
+|     4| EKS       |
+  
+</details>
+
+
+> please stay tune and follow more update.
