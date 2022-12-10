@@ -21,3 +21,8 @@ After review result
 013: Ec2 instance created - 2nodegroup
 014: Dockerhub repository
 012: Cloudformation result - this was done using eks cluster which made it easy to create cluster by just specifying some few parameters like name, number of nodegroup and so on, this approach was thought in the last lesson : Microservice at scale using aws and kubernetes and the result of the creation is showned in the pipeline, reference to image = 001 and 015
+
+Second Review Feedback:
+016: Failed lint test for dockerfile using hadolink in pipeline
+011: Failed lint test for application
+003A: Pass lint test
