@@ -16,7 +16,7 @@ The main scope of the application is to apply my DevOps ` CICD ` skills to a bac
 5. API Health and Deployment Validation
 
 
-[Pipeline_Scope](./image-capstone-view/pipelineScope.png)
+![Pipeline_Scope](./image-capstone-view/pipelineScope.png)
 
 ### Project Scopes
 * Creating Backend - using node.js express ` cd backend `  folder
