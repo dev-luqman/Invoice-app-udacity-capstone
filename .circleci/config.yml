@@ -121,7 +121,7 @@ jobs:
           docker push lukhee/invoice-app:latest
 
 
-  create_cluster_if_not_exit:
+  create_cluster_if_not_found:
     docker:
       - image: circleci/python:3.7
     steps:
