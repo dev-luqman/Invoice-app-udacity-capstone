@@ -302,11 +302,11 @@ workflows:
           requires: [build-backend]
       - test-docker-file:
           requires: [audit-backend]
-          filters:
-            branches:
-              only: [master]
+          # filters:
+          #   branches:
+          #     only: [master]
       - build_backed_to_dockerhub:
-          requires: [audit-backend]
+          requires: [test-docker-file]
       - create_cluster_if_not_exit:
           requires: [build_backed_to_dockerhub]
       - update_to_production: 
